@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% load static %} 
+
+{% block title %}Lumber Lengths{% endblock %} 
+{% block content %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Lumber</th>
+                <th>Length</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lumber in lumber_list %}
+                {% for length in lumber.length_set.all %}
+                    <tr>
+                        <td>{{ lumber.name }}</td>
+                        <td>{{ length.length }}</td>
+                        <td>{{ length.quantity }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

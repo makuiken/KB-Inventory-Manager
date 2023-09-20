@@ -13,5 +13,20 @@ class Length(models.Model):
     length = models.PositiveIntegerField(default=0)
     quantity = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        unique_together = ('ref_id', 'length')
+
     def __str__(self):
         return f"{self.ref_id}: {self.length}' - {self.quantity}"
+    
+    def save(self, *args, **kwargs):
+    # Check if a record with the same ref_id and length already exists
+        existing_length = Length.objects.filter(ref_id=self.ref_id, length=self.length).first()
+
+        if existing_length:
+            # Update the quantity of the existing record
+            existing_length.quantity += self.quantity
+            existing_length.save()
+        else:
+            # Create a new record
+            super().save(*args, **kwargs)

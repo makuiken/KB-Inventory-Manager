@@ -5,13 +5,10 @@ from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView 
 
 #Home List of all objects
-class HomeView(TemplateView):
-    template_name = "inventory/home.html"
-    def get_context_data(self):
-        context = super().get_context_data()
-        context["lumber"] = Lumber.objects.all()
-        context["lengths"] = Length.objects.all()
-        return context
+def home(request):
+    lumber_list = Lumber.objects.all()
+    context = {'lumber_list': lumber_list}
+    return render(request, 'inventory/home.html', context)
 
 #Views for CRUD operations of Lumber types
 class LumberCreate(CreateView):
