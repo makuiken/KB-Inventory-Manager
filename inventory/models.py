@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.crypto import get_random_string
 
 # Create your models here.
 class Lumber(models.Model):
@@ -25,4 +26,10 @@ class Length(models.Model):
     
     def get_absolute_url(self):
         return reverse('home')
-    
+
+class Invitation(models.Model):
+    code = models.CharField(max_length=12, unique=True, default=get_random_string(6))
+    used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.code    
