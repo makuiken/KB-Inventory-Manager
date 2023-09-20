@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from .models import Lumber, Length, Invitation
-from .forms import LumberForm, LengthForm, CustomUserCreationForm
+from .forms import LumberForm, LengthForm, QuantityForm, CustomUserCreationForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -51,6 +51,18 @@ def add_length(request):
     else:
         form = LengthForm()
     return render(request, 'inventory/length_create.html', {'form': form})
+
+@login_required
+def change_quantity(request, ref_id, length):
+    length_instance = Length.objects.get(lumber__ref_id=ref_id, length=length)
+    if request.method == 'POST':
+        form = QuantityForm(request.POST, instance=length_instance)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = QuantityForm()
+    return render(request, 'inventory/quantity_update.html', {'form': form})
 
 class LengthUpdate(LoginRequiredMixin, UpdateView):
     template_name = "inventory/length_update.html"

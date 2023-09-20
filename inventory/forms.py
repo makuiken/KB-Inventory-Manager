@@ -10,7 +10,12 @@ class LumberForm(forms.ModelForm):
 class LengthForm(forms.ModelForm):
     class Meta:
         model = Length
-        fields = ['ref_id', 'length', 'quantity']
+        fields = ['lumber', 'length', 'quantity']
+
+class QuantityForm(forms.ModelForm):
+    class Meta:
+        model = Length
+        fields = ['quantity']
 
 class InvitationCodeField(forms.CharField):
     def validate(self, value):

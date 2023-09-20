@@ -14,15 +14,15 @@ class Lumber(models.Model):
         return reverse('home')
 
 class Length(models.Model):
-    ref_id = models.ForeignKey(Lumber, on_delete=models.CASCADE)
+    lumber = models.ForeignKey(Lumber, on_delete=models.CASCADE)
     length = models.PositiveIntegerField(default=0)
     quantity = models.PositiveIntegerField(default=0)
 
     class Meta:
-        unique_together = ('ref_id', 'length')
+        unique_together = ('lumber', 'length')
 
     def __str__(self):
-        return f"{self.ref_id}: {self.length}' - {self.quantity}"
+        return f"{self.lumber.ref_id}: {self.length}' - {self.quantity}"
     
     def get_absolute_url(self):
         return reverse('home')

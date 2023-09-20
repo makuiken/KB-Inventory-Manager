@@ -5,12 +5,11 @@
     <table border="1">
         <thead>
             <tr>
-                <th>Lumber</th>
+                <th>Product Code</th>
+                <th>Description</th>
                 <th>Length</th>
                 <th>Quantity</th>
-                <th>Edit Board</th>
-                <th>Delete Board</th>
-                <th>Edit Length</th>
+                <th>Edit Quantity</th>
                 <th>Delete Length</th>
             </tr>
         </thead>
@@ -18,12 +17,11 @@
             {% for lumber in lumber_list %}
                 {% for length in lumber.length_set.all %}
                     <tr>
+                        <td>{{ lumber.ref_id }}</td>
                         <td>{{ lumber.name }}</td>
                         <td>{{ length.length }}</td>
                         <td>{{ length.quantity }}</td>
-                        <td><a href="{% url 'lumberupdate' pk=lumber.pk %}">Edit</a></td>
-                        <td><a href="{% url 'lumberdelete' pk=lumber.pk %}">Delete</a></td>
-                        <td><a href="{% url 'lengthupdate' pk=length.pk %}">Edit</a></td>
+                        <td><a href="{% url 'changequantity' ref_id=lumber.ref_id length=length.length %}">Edit</a></td>
                         <td><a href="{% url 'lengthdelete' pk=length.pk %}">Delete</a></td>
                     </tr>
                 {% endfor %}

@@ -16,7 +16,7 @@
           <header>
             <div class="header-first-row">
               <img
-                src="{% static 'routes/logo.png' %}"
+                src="{% static 'inventory/logo.png' %}"
                 alt="Kuiken Brothers Logo"
                 width="80px"
               />
@@ -26,6 +26,7 @@
               <a class="nav-item" href="{% url 'home' %}">Home</a>
               <a class="nav-item" href="{% url 'lumbercreate' %}">New Board</a>
               <a class="nav-item" href="{% url 'lengthcreate' %}">New Length</a>
+              <a class="nav-item" href="{% url 'logout' %}">Logout</a>
             </nav>
           </header>
           <main>{% block content %}{% endblock %}</main>
