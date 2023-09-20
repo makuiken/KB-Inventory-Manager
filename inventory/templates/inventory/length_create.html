@@ -1,8 +1,11 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
-<h2>Add a New Length</h2>
-<form method="POST">
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block content %}
+<h2>Add New Length</h2>
+<form method="POST" action="{% url 'lengthcreate' %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit"/>
 </form>
 {% endblock %}

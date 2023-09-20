@@ -1,6 +1,6 @@
-{% extends 'base.html' %} {% load static %} 
+{% extends 'base.html' %} {% load static %}
 
-{% block title %}Lumber Lengths{% endblock %} 
+{% block title %}Lumber Lengths{% endblock %}
 {% block content %}
     <table border="1">
         <thead>
@@ -8,6 +8,10 @@
                 <th>Lumber</th>
                 <th>Length</th>
                 <th>Quantity</th>
+                <th>Edit Board</th>
+                <th>Delete Board</th>
+                <th>Edit Length</th>
+                <th>Delete Length</th>
             </tr>
         </thead>
         <tbody>
@@ -17,6 +21,10 @@
                         <td>{{ lumber.name }}</td>
                         <td>{{ length.length }}</td>
                         <td>{{ length.quantity }}</td>
+                        <td><a href="{% url 'lumberupdate' pk=lumber.pk %}">Edit</a></td>
+                        <td><a href="{% url 'lumberdelete' pk=lumber.pk %}">Delete</a></td>
+                        <td><a href="{% url 'lengthupdate' pk=length.pk %}">Edit</a></td>
+                        <td><a href="{% url 'lengthdelete' pk=length.pk %}">Delete</a></td>
                     </tr>
                 {% endfor %}
             {% endfor %}

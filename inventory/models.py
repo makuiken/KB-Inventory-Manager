@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 class Lumber(models.Model):
@@ -7,6 +8,9 @@ class Lumber(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def get_absolute_url(self):
+        return reverse('home')
 
 class Length(models.Model):
     ref_id = models.ForeignKey(Lumber, on_delete=models.CASCADE)
@@ -19,14 +23,6 @@ class Length(models.Model):
     def __str__(self):
         return f"{self.ref_id}: {self.length}' - {self.quantity}"
     
-    def save(self, *args, **kwargs):
-    # Check if a record with the same ref_id and length already exists
-        existing_length = Length.objects.filter(ref_id=self.ref_id, length=self.length).first()
-
-        if existing_length:
-            # Update the quantity of the existing record
-            existing_length.quantity += self.quantity
-            existing_length.save()
-        else:
-            # Create a new record
-            super().save(*args, **kwargs)
+    def get_absolute_url(self):
+        return reverse('home')
+    

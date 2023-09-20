@@ -3,11 +3,11 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('lumber/new', views.LumberCreate.as_view(), name='lumbercreate'),
-    path('lumber/edit', views.LumberUpdate.as_view(), name='lumberupdate'),
-    path('lumber/delete', views.LumberDelete.as_view(), name='lumberdelete'),
-    path('lengths/new', views.LengthCreate.as_view(), name='lengthcreate'),
-    path('lengths/edit', views.LengthCreate.as_view(), name='lengthcreate'),
-    path('lengths/delete', views.LengthCreate.as_view(), name='lengthdelete'),
+    path('lumber/new', views.add_lumber, name='lumbercreate'),
+    path('lumber/<str:pk>/edit', views.LumberUpdate.as_view(), name='lumberupdate'),
+    path('lumber/<str:pk>/delete', views.LumberDelete.as_view(), name='lumberdelete'),
+    path('lengths/new', views.add_length, name='lengthcreate'),
+    path('lengths/<str:pk>/edit', views.LengthUpdate.as_view(), name='lengthupdate'),
+    path('lengths/<str:pk>/delete', views.LengthDelete.as_view(), name='lengthdelete'),
 
 ]

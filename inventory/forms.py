@@ -4,9 +4,9 @@ from .models import Lumber, Length
 class LumberForm(forms.ModelForm):
     class Meta:
         model = Lumber
-        fields = "__all__"
+        fields = ['ref_id', 'name']
 
 class LengthForm(forms.ModelForm):
     class Meta:
         model = Length
-        fields = "__all__"
+        fields = ['ref_id', 'length', 'quantity']
