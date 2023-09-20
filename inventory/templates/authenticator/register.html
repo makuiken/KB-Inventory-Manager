@@ -1,4 +1,4 @@
-{% extends 'inventory_app/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 <h2>Register</h2>
@@ -8,6 +8,6 @@
     <button type="submit">Register</button>
 </form>
 <div class="mt-3">
-    <p>Already registered? <a href="{% url 'authenticator:login' %}">Login</a></p>
+    <p>Already registered? <a href="{% url 'login' %}">Login</a></p>
 </div>
 {% endblock %}
