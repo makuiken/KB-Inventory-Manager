@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Lumber, Length
-from forms import LumberForm, LengthForm
+from .forms import LumberForm, LengthForm
 from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView 
 
