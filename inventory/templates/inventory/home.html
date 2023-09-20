@@ -2,30 +2,27 @@
 
 {% block title %}Lumber Lengths{% endblock %}
 {% block content %}
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Product Code</th>
-                <th>Description</th>
-                <th>Length</th>
-                <th>Quantity</th>
-                <th>Edit Quantity</th>
-                <th>Delete Length</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for lumber in lumber_list %}
+    {% for lumber in lumber_list %}
+        <h2>{{ lumber.name }} ({{ lumber.ref_id }})</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Length</th>
+                    <th>Quantity</th>
+                    <th>Edit Quantity</th>
+                    <th>Delete Length</th>
+                </tr>
+            </thead>
+            <tbody>
                 {% for length in lumber.length_set.all %}
                     <tr>
-                        <td>{{ lumber.ref_id }}</td>
-                        <td>{{ lumber.name }}</td>
                         <td>{{ length.length }}</td>
                         <td>{{ length.quantity }}</td>
                         <td><a href="{% url 'changequantity' ref_id=lumber.ref_id length=length.length %}">Edit</a></td>
                         <td><a href="{% url 'lengthdelete' pk=length.pk %}">Delete</a></td>
                     </tr>
                 {% endfor %}
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    {% endfor %}
 {% endblock %}
