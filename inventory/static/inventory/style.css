@@ -1,0 +1,165 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+}
+
+.app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.header-first-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 24px;
+    color: #333;
+}
+
+main {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+}
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background-color: #333;
+    padding: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    margin-bottom: 10px;
+    padding: 5px;
+    transition: background-color 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #555;
+}
+
+.sidebar i {
+    margin-right: 5px;
+}
+
+.app {
+    margin-left: 200px; /* Adjust this value to match the width of the sidebar */
+}
+
+.sidebar-header {
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.sidebar-footer {
+    position: absolute;
+    bottom: 20px;
+    padding-left: 20px;
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border: 1px solid #ccc; /* Add this line to apply the border to the table */
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.data-table th,
+.data-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.data-table th {
+    background-color: #333;
+    color: #fff;
+    border: none; /* Add this line to remove the border from the header cells */
+}
+
+.data-table td {
+    border: none; /* Add this line to remove the border from the table cells */
+}
+
+.data-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.data-table tr:hover {
+    background-color: #ddd;
+}
+
+.data-table a {
+    color: #333;
+    transition: color 0.3s;
+}
+
+.data-table a:hover {
+    color: #555;
+}
+
+.data-table i {
+    font-size: 18px;
+}
+
+.action-cell {
+    width: 40px; /* Adjust the width as needed */
+    text-align: center;
+    padding: 5px; /* Reduce the padding to make the cells more compact */
+}
+
+.action-cell a {
+    display: inline-block;
+    width: 30px; /* Adjust the width as needed */
+    height: 30px; /* Adjust the height as needed */
+    background-color: #f2f2f2; /* Set the background color */
+    border-radius: 5px; /* Add rounded corners */
+    line-height: 30px; /* Align the icon vertically in the middle */
+    transition: background-color 0.3s;
+}
+
+.action-cell a:hover {
+    background-color: #ddd;
+}
+
+.icon-button {
+    display: inline-block;
+    width: 24px; /* Adjust the width as needed */
+    height: 24px; /* Adjust the height as needed */
+    background-color: #999999; /* Set the background color */
+    border-radius: 5px; /* Add rounded corners */
+    line-height: 24px; /* Align the icon vertically in the middle */
+    text-align: center; /* Align the icon horizontally in the middle */
+    transition: background-color 0.3s;
+}
+
+.icon-button:hover {
+    background-color: #999;
+}

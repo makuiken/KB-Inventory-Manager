@@ -2,27 +2,44 @@
 
 {% block title %}Lumber Lengths{% endblock %}
 {% block content %}
-    {% for lumber in lumber_list %}
-        <h2>{{ lumber.name }} ({{ lumber.ref_id }})</h2>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Length</th>
-                    <th>Quantity</th>
-                    <th>Edit Quantity</th>
-                    <th>Delete Length</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for length in lumber.length_set.all %}
-                    <tr>
-                        <td>{{ length.length }}</td>
-                        <td>{{ length.quantity }}</td>
-                        <td><a href="{% url 'changequantity' ref_id=lumber.ref_id length=length.length %}">Edit</a></td>
-                        <td><a href="{% url 'lengthdelete' pk=length.pk %}">Delete</a></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endfor %}
+<form method="GET">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Filter" />
+</form>
+{% for lumber in lumber_list %}
+    <h2>{{ lumber.name }} ({{ lumber.ref_id }})</h2>
+    <table class="data-table" border="1">
+        <thead>
+            <tr>
+                <th>Length</th>
+                <th>Quantity</th>
+                <th></th> <!-- Remove the header text for the action columns -->
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for length in lumber.length_set.all %}
+            <tr>
+                <td>{{ length.length }}</td>
+                <td>{{ length.quantity }}</td>
+                <td class="action-cell">
+                    <span class="icon-button">
+                        <a href="{% url 'changequantity' ref_id=lumber.ref_id length=length.length %}">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                    </span>
+                </td>
+                <td class="action-cell">
+                    <span class="icon-button">
+                        <a href="{% url 'lengthdelete' pk=length.pk %}">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
 {% endblock %}

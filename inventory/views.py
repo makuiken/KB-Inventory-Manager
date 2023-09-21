@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from .models import Lumber, Length, Invitation
-from .forms import LumberForm, LengthForm, QuantityForm, CustomUserCreationForm
+from .forms import LumberForm, LengthForm, QuantityForm, CustomUserCreationForm, LumberTypeFilterForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -12,8 +12,14 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 #Home List of all objects
 @login_required
 def home(request):
-    lumber_list = Lumber.objects.all()
-    context = {'lumber_list': lumber_list}
+    selected_type = request.GET.get('lumber_type', None)
+    if selected_type:
+        lumber_list = Lumber.objects.filter(lumber_type=selected_type)
+    else:
+        lumber_list = Lumber.objects.all()
+
+    form = LumberTypeFilterForm()
+    context = {'lumber_list': lumber_list, 'form': form}
     return render(request, 'inventory/home.html', context)
 
 #Views for CRUD operations of Lumber types

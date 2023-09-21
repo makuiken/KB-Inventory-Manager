@@ -7,6 +7,9 @@ class LumberForm(forms.ModelForm):
         model = Lumber
         fields = ['ref_id', 'name']
 
+class LumberTypeFilterForm(forms.Form):
+    lumber_type = forms.ModelChoiceField(queryset=Lumber.objects.values_list('lumber_type', flat=True).distinct(), empty_label="All Types", required=False)
+
 class LengthForm(forms.ModelForm):
     class Meta:
         model = Length
