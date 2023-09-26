@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from .models import Lumber, Length, Invitation
-from .forms import LumberForm, LengthForm, QuantityForm, CustomUserCreationForm, LumberTypeFilterForm
+from .models import Lumber, Length, Invitation, Sale, ChangeLog
+from .forms import LumberForm, LengthForm, QuantityForm, CustomUserCreationForm, LumberTypeFilterForm, SellForm, CutForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -18,10 +18,57 @@ def home(request):
     else:
         lumber_list = Lumber.objects.all()
 
+    length_list = Length.objects.all()
+
     form = LumberTypeFilterForm()
-    context = {'lumber_list': lumber_list, 'form': form}
+    context = {'lumber_list': lumber_list, 'length_list': length_list, 'form': form}
     return render(request, 'inventory/home.html', context)
 
+#Salesmen Pages
+@login_required
+def sell(request, length_id, ref_id):
+    selected_length = get_object_or_404(Length, id=length_id)
+
+    if request.method == 'POST':
+        form = SellForm(request.POST)
+        if form.is_valid():
+            selected_length = form.cleaned_data['length']
+
+            sale = Sale(
+                user=request.user,
+                changetype='sale',
+                product_id=selected_length.lumber,
+                length=selected_length,
+                quantity=1
+            )
+            sale.save()
+
+            selected_length.quantity -= 1
+            selected_length.save()
+
+            return redirect('home')
+    else:
+        form = SellForm(initial={'length': selected_length})
+
+    return render(request, 'inventory/sell_view.html', {'form': form})
+@login_required
+def cut(request, length_id, ref_id):
+    selected_length = get_object_or_404(Length, id=length_id)
+    product_id = selected_length.lumber
+
+    if request.method == 'POST':
+        form = CutForm(request.POST)
+        if form.is_valid():
+            desired_length = form.cleaned_data['desired_length']
+
+            sale = Sale(user=request.user)
+            sale.cut_from(request.user, product_id, selected_length.length, desired_length)
+
+            return redirect('home')
+    else:
+        form = CutForm(initial={'length': selected_length})
+
+    return render(request, 'cut.html', {'form': form})
 #Views for CRUD operations of Lumber types
 @login_required
 def add_lumber(request):

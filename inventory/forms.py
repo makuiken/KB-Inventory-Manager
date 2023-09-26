@@ -20,6 +20,13 @@ class QuantityForm(forms.ModelForm):
         model = Length
         fields = ['quantity']
 
+class SellForm(forms.Form):
+    length = forms.ModelChoiceField(queryset=Length.objects.all(), label='Select Length')
+
+class CutForm(forms.Form):
+    length = forms.ModelChoiceField(queryset=Length.objects.all(), label='Select Length')
+    desired_length = forms.IntegerField(label='Desired Length')
+
 class InvitationCodeField(forms.CharField):
     def validate(self, value):
         super().validate(value)

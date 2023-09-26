@@ -14,7 +14,9 @@
             <tr>
                 <th>Length</th>
                 <th>Quantity</th>
-                <th></th> <!-- Remove the header text for the action columns -->
+                <th></th>
+                <th></th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -23,6 +25,20 @@
             <tr>
                 <td>{{ length.length }}</td>
                 <td>{{ length.quantity }}</td>
+                <td class="action-cell">
+                    <span class="icon-button">
+                        <a href="{% url 'sell' length.id lumber.ref_id %}">
+                            <img src="{% static 'green_plus_icon.png' %}" alt="Sell" width="20" height="20">
+                        </a>
+                    </span>
+                </td>
+                <td class="action-cell">
+                    <span class="icon-button">
+                        <a href="{% url 'cut' length.id lumber.ref_id %}">
+                            <img src="{% static 'saw_icon.png' %}" alt="Sell" width="20" height="20">
+                        </a>
+                    </span>
+                </td>
                 <td class="action-cell">
                     <span class="icon-button">
                         <a href="{% url 'changequantity' ref_id=lumber.ref_id length=length.length %}">

@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
+import random
 
 class LengthExistsError(Exception):
     pass
@@ -16,6 +17,19 @@ def get_default_user():
         }
     )
     return default_user.id
+
+def generate_random_change_code():
+    while True:
+        code = random.randint(100000, 999999)
+        if not ChangeLog.objects.filter(change_code=str(code)).exists():
+            return str(code)
+        
+def generate_random_sales_code():
+    while True:
+        code = random.randint(100000, 999999)
+        if not Sale.objects.filter(sales_code=str(code)).exists():
+            return str(code)
+
 
 # Create your models here.
 class Lumber(models.Model):
@@ -44,7 +58,7 @@ class Length(models.Model):
         unique_together = ('lumber', 'length')
 
     def __str__(self):
-        return f"{self.lumber.ref_id}: {self.length}' - {self.quantity}"
+        return f"{self.lumber.ref_id}: {self.length}'"
     
     def get_absolute_url(self):
         return reverse('home')
@@ -52,18 +66,23 @@ class Length(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        # Create a new ChangeLog entry
+    # Create a new ChangeLog entry
         change_log = ChangeLog(
-            user=self.user,  # You'll need to add a user field to the Lumber model
+            length_user=self.lumber.user,  # Use the lumber.user field instead of self.user
             changetype='adjustment',
-            description=f"Lengths {self.lumber.ref_id} updated"
         )
         change_log.save()
 
 class Sale(models.Model):
-    sales_code = models.CharField(max_length=6, primary_key=True, default=get_random_string)
+    sales_code = models.CharField(max_length=6, primary_key=True, default=generate_random_sales_code)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
     datetime = models.DateTimeField(auto_now_add=True)
+    CHANGE_TYPE_CHOICES = [
+        ('sale', 'Sale'),
+        ('return', 'Return'),
+        ('adjustment', 'Adjustment'),
+    ]
+    changetype = models.CharField(max_length=10, choices=CHANGE_TYPE_CHOICES, default="adjustment")
     salesorder = models.IntegerField(null=True, blank=True)
     product_id = models.ForeignKey(Lumber, on_delete=models.CASCADE)
     length = models.ForeignKey(Length, on_delete=models.CASCADE)
@@ -75,10 +94,11 @@ class Sale(models.Model):
     def get_absolute_url(self):
         return reverse('home')
     
-    def cut_from(self, selected_length, desired_length):
+    def cut_from(self, user, product_id, selected_length, desired_length):
         # Get the selected length object
     
-        length_obj = Length.objects.get(lumber=self.product_id, length=selected_length)
+        length_obj = Length.objects.get(lumber=product_id, length=selected_length)
+        desired_length_obj = Length.objects.get(lumber=length_obj.lumber, length=desired_length)
         
         if Length.objects.filter(lumber=length_obj.lumber, length=desired_length).exists():
             raise LengthExistsError("This length already exists.")
@@ -102,10 +122,11 @@ class Sale(models.Model):
         remaining_length_obj.save()
 
         # Add the desired length to the Sale model
+
         sale = Sale(
             user=self.user,
             product_id=length_obj.lumber,
-            length=desired_length,
+            length=desired_length_obj,
             quantity=1
         )
         sale.save()
@@ -113,8 +134,7 @@ class Sale(models.Model):
         return sale
 
 class ChangeLog(models.Model):
-    change_code = models.CharField(max_length=6, primary_key=True, default=get_random_string)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
+    change_code = models.CharField(max_length=6, primary_key=True, default=generate_random_change_code)
     datetime = models.DateTimeField(auto_now_add=True)
     CHANGE_TYPE_CHOICES = [
         ('sale', 'Sale'),
@@ -122,9 +142,13 @@ class ChangeLog(models.Model):
         ('adjustment', 'Adjustment'),
     ]
     changetype = models.CharField(max_length=10, choices=CHANGE_TYPE_CHOICES)
+    lumber_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='lumber_changelog')
+    length_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='length_changelog')
+    sale_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='sale_changelog')
 
     def __str__(self):
-        return f"{self.change_code}: {self.changetype} - {self.user} | {self.datetime.strftime('%Y-%m-%d %H:%M:%S')}"
+        user = self.lumber_user or self.length_user or self.sale_user
+        return f"{self.change_code}: {self.changetype} - {user} | {self.datetime.strftime('%Y-%m-%d %H:%M:%S')}"
 
 class Invitation(models.Model):
     code = models.CharField(max_length=12, unique=True, default=get_random_string(6))
