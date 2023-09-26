@@ -90,6 +90,7 @@ main {
     border: 1px solid #ccc; /* Add this line to apply the border to the table */
     border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .data-table th,
@@ -130,36 +131,42 @@ main {
 }
 
 .action-cell {
-    width: 40px; /* Adjust the width as needed */
+    width: 40px;
     text-align: center;
-    padding: 5px; /* Reduce the padding to make the cells more compact */
+    padding: 5px;
 }
 
 .action-cell a {
     display: inline-block;
-    width: 30px; /* Adjust the width as needed */
-    height: 30px; /* Adjust the height as needed */
-    background-color: #f2f2f2; /* Set the background color */
-    border-radius: 5px; /* Add rounded corners */
-    line-height: 30px; /* Align the icon vertically in the middle */
+    width: 30px;
+    height: 30px;
+    background-color: #92a391;
+    border-radius: 5px;
     transition: background-color 0.3s;
 }
 
 .action-cell a:hover {
-    background-color: #ddd;
+    background-color: #333;
 }
 
 .icon-button {
     display: inline-block;
-    width: 24px; /* Adjust the width as needed */
-    height: 24px; /* Adjust the height as needed */
-    background-color: #999999; /* Set the background color */
-    border-radius: 5px; /* Add rounded corners */
-    line-height: 24px; /* Align the icon vertically in the middle */
-    text-align: center; /* Align the icon horizontally in the middle */
+    position: relative;
+    width: 24px;
+    height: 24px;
+    background-color: #999999;
+    border-radius: 5px;
     transition: background-color 0.3s;
 }
 
 .icon-button:hover {
-    background-color: #999;
+    background-color: #ffffff;
+}
+
+.icon-button i {
+    position: absolute;
+    top: 60%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    color: #fff; /* Set the icon color */
 }

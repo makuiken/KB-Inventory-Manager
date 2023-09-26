@@ -9,15 +9,15 @@
 </form>
 {% for lumber in lumber_list %}
     <h2>{{ lumber.name }} ({{ lumber.ref_id }})</h2>
-    <table class="data-table" border="1">
+    <table class="data-table">
         <thead>
             <tr>
                 <th>Length</th>
                 <th>Quantity</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
+                <th>Sell</th>
+                <th>Cut</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -28,28 +28,28 @@
                 <td class="action-cell">
                     <span class="icon-button">
                         <a href="{% url 'sell' length.id lumber.ref_id %}">
-                            <img src="{% static 'inventory/sell_icon.png' %}" alt="Sell" width="20" height="20">
+                            <i class="fa-solid fa-tag"></i>
                         </a>
                     </span>
                 </td>
                 <td class="action-cell">
                     <span class="icon-button">
                         <a href="{% url 'cut' length.id lumber.ref_id %}">
-                            <img src="{% static 'inventory/saw_icon.png' %}" alt="Cut" width="20" height="20">
+                            <i class="fa-solid fa-bars-staggered"></i>
                         </a>
                     </span>
                 </td>
                 <td class="action-cell">
                     <span class="icon-button">
                         <a href="{% url 'changequantity' ref_id=lumber.ref_id length=length.length %}">
-                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                            <i class="fa-solid fa-pencil"></i>
                         </a>
                     </span>
                 </td>
                 <td class="action-cell">
                     <span class="icon-button">
                         <a href="{% url 'lengthdelete' pk=length.pk %}">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            <i class="fa-solid fa-trash"></i>
                         </a>
                     </span>
                 </td>
