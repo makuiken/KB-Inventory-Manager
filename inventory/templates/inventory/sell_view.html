@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
-{% load static %}
+
 {% block content %}
     <h2>Sell Length</h2>
+    <p>Selected Length: {{ selected_length.length }}'</p>
+    <p>Available Quantity: {{ selected_length.quantity }}</p>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

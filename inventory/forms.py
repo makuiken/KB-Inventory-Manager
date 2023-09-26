@@ -21,7 +21,7 @@ class QuantityForm(forms.ModelForm):
         fields = ['quantity']
 
 class SellForm(forms.Form):
-    length = forms.ModelChoiceField(queryset=Length.objects.all(), label='Select Length')
+    quantity = forms.IntegerField(min_value=1, label='Quantity')
 
 class CutForm(forms.Form):
     length = forms.ModelChoiceField(queryset=Length.objects.all(), label='Select Length')

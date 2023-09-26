@@ -32,25 +32,29 @@ def sell(request, length_id, ref_id):
     if request.method == 'POST':
         form = SellForm(request.POST)
         if form.is_valid():
-            selected_length = form.cleaned_data['length']
+            quantity = form.cleaned_data['quantity']
+
+            if selected_length.quantity < quantity:
+                raise ValueError("The selected length does not have enough quantity available.")
 
             sale = Sale(
                 user=request.user,
                 changetype='sale',
                 product_id=selected_length.lumber,
                 length=selected_length,
-                quantity=1
+                quantity=quantity
             )
             sale.save()
 
-            selected_length.quantity -= 1
+            selected_length.quantity -= quantity
             selected_length.save()
 
             return redirect('home')
     else:
-        form = SellForm(initial={'length': selected_length})
+        form = SellForm(initial={'quantity': selected_length.quantity})
 
-    return render(request, 'inventory/sell_view.html', {'form': form})
+    return render(request, 'inventory/sell_view.html', {'form': form, 'selected_length': selected_length})
+
 @login_required
 def cut(request, length_id, ref_id):
     selected_length = get_object_or_404(Length, id=length_id)
@@ -68,7 +72,7 @@ def cut(request, length_id, ref_id):
     else:
         form = CutForm(initial={'length': selected_length})
 
-    return render(request, 'cut.html', {'form': form})
+    return render(request, 'inventory/cut_view.html', {'form': form})
 #Views for CRUD operations of Lumber types
 @login_required
 def add_lumber(request):
