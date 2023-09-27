@@ -4,9 +4,11 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
 import random
 
+#Exceptions
 class LengthExistsError(Exception):
     pass
 
+#Default Functions
 def get_default_user():
     default_user, created = User.objects.get_or_create(
         username='default_user',
@@ -31,7 +33,7 @@ def generate_random_sales_code():
             return str(code)
 
 
-# Create your models here.
+#Model for boards
 class Lumber(models.Model):
     LUMBER_TYPES = (
         ('lvl', 'Versa-Lam Beam'),
@@ -49,6 +51,7 @@ class Lumber(models.Model):
     def get_absolute_url(self):
         return reverse('home')
 
+#Model for lengths
 class Length(models.Model):
     lumber = models.ForeignKey(Lumber, on_delete=models.CASCADE)
     length = models.PositiveIntegerField(default=0)
@@ -73,6 +76,7 @@ class Length(models.Model):
         )
         change_log.save()
 
+#Model for Sales
 class Sale(models.Model):
     sales_code = models.CharField(max_length=6, primary_key=True, default=generate_random_sales_code)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
@@ -138,6 +142,7 @@ class Sale(models.Model):
         # Return the desired_length_obj to indicate the operation was successful
         return desired_length_obj
 
+#Model for monitoring changes (WIP)
 class ChangeLog(models.Model):
     change_code = models.CharField(max_length=6, primary_key=True, default=generate_random_change_code)
     datetime = models.DateTimeField(auto_now_add=True)
