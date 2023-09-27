@@ -56,9 +56,8 @@ def sell(request, length_id, ref_id):
     return render(request, 'inventory/sell_view.html', {'form': form, 'selected_length': selected_length})
 
 @login_required
-def cut(request, length_id, ref_id):
-    selected_length = get_object_or_404(Length, id=length_id)
-    product_id = selected_length.lumber
+def cut(request, ref_id, length):
+    selected_length = get_object_or_404(Length, lumber__ref_id=ref_id, length=length)
 
     if request.method == 'POST':
         form = CutForm(request.POST)
@@ -66,13 +65,14 @@ def cut(request, length_id, ref_id):
             desired_length = form.cleaned_data['desired_length']
 
             sale = Sale(user=request.user)
-            sale.cut_from(request.user, product_id, selected_length.length, desired_length)
+            sale.cut_from(request.user, selected_length.lumber, selected_length.length, desired_length)
 
             return redirect('home')
     else:
-        form = CutForm(initial={'length': selected_length})
+        form = CutForm()
 
-    return render(request, 'inventory/cut_view.html', {'form': form})
+    return render(request, 'inventory/cut_view.html', {'form': form, 'selected_length': selected_length})
+
 #Views for CRUD operations of Lumber types
 @login_required
 def add_lumber(request):
@@ -127,11 +127,15 @@ class LengthUpdate(LoginRequiredMixin, UpdateView):
     form_class = LengthForm
     success_url = reverse_lazy('home')
 
-class LengthDelete(LoginRequiredMixin, DeleteView):
-    template_name = "inventory/length_delete.html"
-    model = Length
-    form_class = LengthForm
-    success_url = reverse_lazy('home')
+@login_required
+def length_delete(request, ref_id, length):
+    length_instance = get_object_or_404(Length, lumber__ref_id=ref_id, length=length)
+
+    if request.method == 'POST':
+        length_instance.delete()
+        return redirect('home')
+
+    return render(request, 'inventory/length_delete.html', {'length': length_instance})
 
 #User Registration and Login
 def register(request):

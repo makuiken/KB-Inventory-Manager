@@ -21,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for length in lumber.length_set.all %}
+            {% for length in lumber.length_set.all|dictsortreversed:"length" %}
             <tr>
                 <td>{{ length.length }}</td>
                 <td>{{ length.quantity }}</td>
@@ -34,7 +34,7 @@
                 </td>
                 <td class="action-cell">
                     <span class="icon-button">
-                        <a href="{% url 'cut' length.id lumber.ref_id %}">
+                        <a href="{% url 'cut' ref_id=lumber.ref_id length=length.length %}">
                             <i class="fa-solid fa-bars-staggered"></i>
                         </a>
                     </span>
@@ -48,7 +48,7 @@
                 </td>
                 <td class="action-cell">
                     <span class="icon-button">
-                        <a href="{% url 'lengthdelete' pk=length.pk %}">
+                        <a href="{% url 'lengthdelete' ref_id=lumber.ref_id length=length.length %}">
                             <i class="fa-solid fa-trash"></i>
                         </a>
                     </span>

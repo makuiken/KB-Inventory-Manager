@@ -98,9 +98,13 @@ class Sale(models.Model):
         # Get the selected length object
     
         length_obj = Length.objects.get(lumber=product_id, length=selected_length)
-        desired_length_obj = Length.objects.get(lumber=length_obj.lumber, length=desired_length)
+        desired_length_obj, created = Length.objects.get_or_create(
+            lumber=length_obj.lumber,
+            length=desired_length,
+            defaults={'quantity': 0}
+        )
         
-        if Length.objects.filter(lumber=length_obj.lumber, length=desired_length).exists():
+        if selected_length == desired_length and Length.objects.filter(lumber=length_obj.lumber, length=desired_length).exists():
             raise LengthExistsError("This length already exists.")
 
         # Calculate the remaining length after cutting
