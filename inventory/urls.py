@@ -13,6 +13,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
-    path('sell/<int:length_id>/<str:ref_id>/', views.sell, name='sell'),
+    path('lengths/<str:ref_id>/<int:length>/sell', views.sell, name='sell'),
     path('lengths/<str:ref_id>/<int:length>/cut', views.cut, name='cut'),
 ]

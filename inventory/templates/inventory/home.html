@@ -27,7 +27,7 @@
                 <td>{{ length.quantity }}</td>
                 <td class="action-cell">
                     <span class="icon-button">
-                        <a href="{% url 'sell' length.id lumber.ref_id %}">
+                        <a href="{% url 'sell' ref_id=lumber.ref_id length=length.length %}">
                             <i class="fa-solid fa-tag"></i>
                         </a>
                     </span>

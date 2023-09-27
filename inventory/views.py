@@ -26,8 +26,8 @@ def home(request):
 
 #Salesmen Pages
 @login_required
-def sell(request, length_id, ref_id):
-    selected_length = get_object_or_404(Length, id=length_id)
+def sell(request, ref_id, length):
+    selected_length = get_object_or_404(Length, lumber__ref_id=ref_id, length=length)
 
     if request.method == 'POST':
         form = SellForm(request.POST)
@@ -119,7 +119,7 @@ def change_quantity(request, ref_id, length):
             form.save()
             return redirect('home')
     else:
-        form = QuantityForm()
+        form = QuantityForm(initial={'quantity': length_instance.quantity})
     return render(request, 'inventory/quantity_update.html', {'form': form})
 
 class LengthUpdate(LoginRequiredMixin, UpdateView):
