@@ -94,48 +94,49 @@ class Sale(models.Model):
     def get_absolute_url(self):
         return reverse('home')
     
-    def cut_from(self, user, product_id, selected_length, desired_length):
+    def cut_from(self, user, product_id, selected_length, desired_length, quantity):
         # Get the selected length object
-    
         length_obj = Length.objects.get(lumber=product_id, length=selected_length)
-        desired_length_obj, created = Length.objects.get_or_create(
-            lumber=length_obj.lumber,
-            length=desired_length,
-            defaults={'quantity': 0}
-        )
-        
+
         if selected_length == desired_length and Length.objects.filter(lumber=length_obj.lumber, length=desired_length).exists():
             raise LengthExistsError("This length already exists.")
 
-        # Calculate the remaining length after cutting
-        remaining_length = selected_length - desired_length
+        # Check if there is enough quantity available for the cuts
+        if length_obj.quantity < quantity:
+            raise ValueError("Not enough quantity available for the requested cuts.")
 
-        # Update the quantity of the selected length
-        length_obj.quantity -= 1
-        length_obj.save()
+        for _ in range(quantity):
+            # Calculate the remaining length after cutting
+            remaining_length = selected_length - desired_length
 
-        # Check if there's an existing length object with the remaining length
-        remaining_length_obj, created = Length.objects.get_or_create(
-            lumber=length_obj.lumber,
-            length=remaining_length,
-            defaults={'quantity': 0}
-        )
+            # Update the quantity of the selected length
+            length_obj.quantity -= 1
+            length_obj.save()
 
-        # Update the quantity of the remaining length
-        remaining_length_obj.quantity += 1
-        remaining_length_obj.save()
+            # Check if there's an existing length object with the remaining length
+            remaining_length_obj, created = Length.objects.get_or_create(
+                lumber=length_obj.lumber,
+                length=remaining_length,
+                defaults={'quantity': 0}
+            )
 
-        # Add the desired length to the Sale model
+            # Update the quantity of the remaining length
+            remaining_length_obj.quantity += 1
+            remaining_length_obj.save()
 
-        sale = Sale(
-            user=self.user,
-            product_id=length_obj.lumber,
-            length=desired_length_obj,
-            quantity=1
-        )
-        sale.save()
+            # Get or create the desired length instance
+            desired_length_obj, created = Length.objects.get_or_create(
+                lumber=length_obj.lumber,
+                length=desired_length,
+                defaults={'quantity': 0}
+            )
 
-        return sale
+            # Update the quantity of the desired length
+            desired_length_obj.quantity += 1
+            desired_length_obj.save()
+
+        # Return the desired_length_obj to indicate the operation was successful
+        return desired_length_obj
 
 class ChangeLog(models.Model):
     change_code = models.CharField(max_length=6, primary_key=True, default=generate_random_change_code)

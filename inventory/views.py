@@ -63,9 +63,10 @@ def cut(request, ref_id, length):
         form = CutForm(request.POST)
         if form.is_valid():
             desired_length = form.cleaned_data['desired_length']
+            quantity = form.cleaned_data['quantity']
 
             sale = Sale(user=request.user)
-            sale.cut_from(request.user, selected_length.lumber, selected_length.length, desired_length)
+            sale.cut_from(request.user, selected_length.lumber, selected_length.length, desired_length, quantity)
 
             return redirect('home')
     else:
