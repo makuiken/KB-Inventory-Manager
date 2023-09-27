@@ -4,6 +4,7 @@ __pycache__/
 *.pyo
 *.pyd
 *.log
+inventory/__pycache__/models.cpython-311.pyc
 
 # SQLite database
 *.sqlite3
@@ -12,4 +13,4 @@ __pycache__/
 .vscode/
 .idea/
 *.swp
-*.swo
+*.swo 
