@@ -5,10 +5,6 @@ __pycache__/
 *.pyd
 *.log
 
-# Virtual environment
-Pipfile
-Pipfile.lock
-
 # SQLite database
 *.sqlite3
 
