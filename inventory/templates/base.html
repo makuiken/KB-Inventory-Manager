@@ -17,11 +17,16 @@
     <body>
         <div class="app">
           <aside class="sidebar">
-            <h3 class="sidebar-header">Actions:</h3>
+            <h3 class="sidebar-header">Views:</h3>
             <a href="{% url 'home' %}">
                 <i class="fa fa-home" aria-hidden="true"></i>
                 Home
             </a>
+            <a href="{% url 'change_log' %}">
+              <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+              Changes
+            </a>
+            <h3 class="sidebar-header">Actions:</h3>
             <a href="{% url 'lumbercreate' %}">
                 <i class="fa fa-plus-square" aria-hidden="true"></i>
                 New Board

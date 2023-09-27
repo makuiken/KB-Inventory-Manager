@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from .models import Lumber, Length, Invitation, Sale, ChangeLog
 from .forms import LumberForm, LengthForm, QuantityForm, CustomUserCreationForm, LumberTypeFilterForm, SellForm, CutForm
@@ -23,6 +24,21 @@ def home(request):
     form = LumberTypeFilterForm()
     context = {'lumber_list': lumber_list, 'length_list': length_list, 'form': form}
     return render(request, 'inventory/home.html', context)
+
+@login_required
+def change_log(request):
+    change_log_entries = ChangeLog.objects.all().order_by('-datetime')
+
+    paginator = Paginator(change_log_entries, 25)  # Show 25 entries per page
+    page = request.GET.get('page')
+    entries = paginator.get_page(page)
+    
+    return render(request, 'inventory/change_log.html', {'entries': entries})
+
+@login_required
+def change_details(request, change_code):
+    change_log_entry = get_object_or_404(ChangeLog, change_code=change_code)
+    return render(request, 'inventory/change_details.html', {'change_log_entry': change_log_entry})
 
 #Salesmen Pages
 @login_required
@@ -49,6 +65,14 @@ def sell(request, ref_id, length):
             selected_length.quantity -= quantity
             selected_length.save()
 
+            change_log = ChangeLog(
+                sale_user=request.user,
+                changetype='sale',
+                description=f"{selected_length.lumber.ref_id}: Sold {quantity} - {selected_length.length}'"
+            )
+
+            change_log.save()
+
             return redirect('home')
     else:
         form = SellForm(initial={'quantity': selected_length.quantity})
@@ -67,6 +91,13 @@ def cut(request, ref_id, length):
 
             sale = Sale(user=request.user)
             sale.cut_from(request.user, selected_length.lumber, selected_length.length, desired_length, quantity)
+
+            change_log = ChangeLog(
+                sale_user=request.user,
+                changetype='adjustment',
+                description=f"{selected_length.lumber.ref_id}: Cut {quantity} - {selected_length.length}' to {desired_length}'"
+            )
+            change_log.save()
 
             return redirect('home')
     else:
@@ -117,6 +148,14 @@ def change_quantity(request, ref_id, length):
         form = QuantityForm(request.POST, instance=length_instance)
         if form.is_valid():
             form.save()
+
+            change_log = ChangeLog(
+                length_user=request.user,
+                changetype='adjustment',
+                description=f" {length_instance.lumber.ref_id}- {length}': Changed Quantity to {length_instance.quantity} "
+            )
+            change_log.save()
+
             return redirect('home')
     else:
         form = QuantityForm(initial={'quantity': length_instance.quantity})
@@ -134,6 +173,14 @@ def length_delete(request, ref_id, length):
 
     if request.method == 'POST':
         length_instance.delete()
+        
+        change_log = ChangeLog(
+            length_user=request.user,
+            changetype='adjustment',
+            description=f"{length_instance.lumber.ref_id}: Deleted {length}"
+        )
+        change_log.save()
+
         return redirect('home')
 
     return render(request, 'inventory/length_delete.html', {'length': length_instance})

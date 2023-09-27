@@ -67,14 +67,12 @@ class Length(models.Model):
         return reverse('home')
     
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        # If the quantity is zero, delete the instance and return
+        if self.quantity == 0:
+            self.delete()
+            return
 
-    # Create a new ChangeLog entry
-        change_log = ChangeLog(
-            length_user=self.lumber.user,  # Use the lumber.user field instead of self.user
-            changetype='adjustment',
-        )
-        change_log.save()
+        super().save(*args, **kwargs)
 
 #Model for Sales
 class Sale(models.Model):
@@ -152,6 +150,7 @@ class ChangeLog(models.Model):
         ('adjustment', 'Adjustment'),
     ]
     changetype = models.CharField(max_length=10, choices=CHANGE_TYPE_CHOICES)
+    description = models.TextField(null=True, blank=True)
     lumber_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='lumber_changelog')
     length_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='length_changelog')
     sale_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='sale_changelog')
@@ -165,4 +164,4 @@ class Invitation(models.Model):
     used = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.code    
+        return self.code
