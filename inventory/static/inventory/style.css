@@ -142,11 +142,13 @@ main {
     height: 30px;
     background-color: #92a391;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .action-cell a:hover {
     background-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .icon-button {
@@ -157,10 +159,6 @@ main {
     background-color: #999999;
     border-radius: 5px;
     transition: background-color 0.3s;
-}
-
-.icon-button:hover {
-    background-color: #ffffff;
 }
 
 .icon-button i {
