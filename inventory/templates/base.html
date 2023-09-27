@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Inventory Management</title>
-
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'inventory/img/favicon.ico' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'inventory/style.css' %}" />
         <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
         <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
@@ -24,7 +24,7 @@
             </a>
             <a href="{% url 'change_log' %}">
               <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-              Changes
+              Changelog
             </a>
             <h3 class="sidebar-header">Actions:</h3>
             <a href="{% url 'lumbercreate' %}">
