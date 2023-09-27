@@ -1,0 +1,19 @@
+# Python and Django generated files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual environment
+Pipfile
+Pipfile.lock
+
+# SQLite database
+*.sqlite3
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
