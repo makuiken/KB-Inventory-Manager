@@ -90,7 +90,7 @@ def cut(request, ref_id, length):
             quantity = form.cleaned_data['quantity']
 
             sale = Sale(user=request.user)
-            sale.cut_from(request.user, selected_length.lumber, selected_length.length, desired_length, quantity)
+            sale.cut_from(request.user, selected_length.lumber.ref_id, selected_length.length, desired_length, quantity)
 
             change_log = ChangeLog(
                 sale_user=request.user,
