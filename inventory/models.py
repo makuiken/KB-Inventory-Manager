@@ -89,90 +89,77 @@ class Sale(models.Model):
     def get_absolute_url(self):
         return reverse('home')
     
-    def cut_from(self, user, product_id, selected_length, desired_length, quantity):
+    def cut_from(self, user, product_id, selected, desired, quantity):
         
         # Get the selected length object
-        length_obj = Length.objects.get(lumber=product_id, length=selected_length)
+        length_obj = Length.objects.get(lumber=product_id, length=selected)
+        remaining = []
+        min_size = 8
+
+        if selected == desired and Length.objects.filter(lumber=length_obj.lumber, length=desired).exists():
+            raise LengthExistsError("This length already exists.")    
         
-        if selected_length == desired_length and Length.objects.filter(lumber=length_obj.lumber, length=desired_length).exists():
-            raise LengthExistsError("This length already exists.")
-        
-        # Check if there is enough quantity available for the cuts
-        
-        linear_feet = desired_length * quantity
-        
-        modulo_result = selected_length % desired_length
-        if modulo_result == 0:
+        if selected % desired == 0 and min_size <= desired:
+            can_cut = math.ceil(selected / desired)
+            can_cut
             min_size = 0
         else:
-            min_size = 8
+            can_cut = math.floor((selected - min_size) / desired)
+            can_cut
         
-        if linear_feet < (selected_length - min_size):
-                      
-                # Calculate the remaining length after cutting
-                remaining_length = selected_length - (quantity*desired_length)
-                
-                # Update the quantity of the selected length
-                length_obj.quantity -= 1
-                length_obj.save()
-                
-                # Check if there's an existing length object with the remaining length
-                if remaining_length > 0:
-                    remaining_length_obj, created = Length.objects.get_or_create(
-                        lumber=length_obj.lumber,
-                        length=remaining_length,
-                        defaults={'quantity': 0}
-                    )
-                    
-                    # Update the quantity of the remaining length
-                    remaining_length_obj.quantity += 1
-                    remaining_length_obj.save()
-                
-                # Get or create the desired length instance
-                for _ in range(quantity):
-                    desired_length_obj, created = Length.objects.get_or_create(
-                        lumber=length_obj.lumber,
-                        length=desired_length,
-                        defaults={'quantity': 0}
-                    )
-                
-                    # Update the quantity of the desired length
-                    desired_length_obj.quantity += 1
-                    desired_length_obj.save()
+        if desired * can_cut <= selected:
+            boards_needed = math.ceil(quantity/can_cut)
+        elif desired > ((selected - min_size)/2):
+            boards_needed = math.ceil(quantity/can_cut)
         else:
-            boards_needed = math.ceil(linear_feet / selected_length)
-            total_feet = selected_length * boards_needed
-            remaining_length = total_feet - (desired_length * quantity)
-
-            if length_obj.quantity < boards_needed:
-                raise ValueError("Not enough boards available for the requested cuts.")
-
-            length_obj.quantity -= boards_needed
+            boards_needed = math.ceil(quantity/can_cut) + 1
+        
+        if can_cut > 1 and desired * quantity < selected:
+            final_board_cut = 1
+        elif can_cut > 1:
+            final_board_cut = (quantity % can_cut)
+            if final_board_cut == 0:
+                final_board_cut = can_cut
+        else:
+            final_board_cut = 1
+        
+        if boards_needed > 1:
+            for i in range(boards_needed-1):
+                remaining.append(selected - (can_cut * desired))
+            remaining.append(selected - (final_board_cut * desired))
+        else:
+            remaining.append(selected - desired * quantity)
+        
+        #Delete boards used
+        for i in range(boards_needed):
+            length_obj.quantity -= 1
             length_obj.save()
 
-
-            if remaining_length > 0:
-                remaining_length_obj, created = Length.objects.get_or_create(
-                    lumber=length_obj.lumber,
-                    length=remaining_length,
-                    defaults={'quantity': 0}
-                )
-                
-                # Update the quantity of the remaining length
+        #Add remaining length
+        for i in range(len(remaining)):
+            remaining_length_obj, created = Length.objects.get_or_create(
+                lumber=length_obj.lumber,
+                length=remaining[i],
+                defaults={'quantity': 0}
+            )
+        # Update the quantity of the remaining length
+            if remaining_length_obj.length != 0:
                 remaining_length_obj.quantity += 1
-                remaining_length_obj.save()
+                remaining_length_obj.save()     
+            else:
+                remaining_length_obj.delete()      
 
-            for _ in range(quantity):
-                desired_length_obj, created = Length.objects.get_or_create(
-                    lumber=length_obj.lumber,
-                    length=desired_length,
-                    defaults={'quantity': 0}
-                )
-
-                # Update the quantity of the desired length
-                desired_length_obj.quantity += 1
-                desired_length_obj.save()
-
+        for _ in range(quantity):
+            desired_length_obj, created = Length.objects.get_or_create(
+                lumber=length_obj.lumber,
+                length=desired,
+                defaults={'quantity': 0}
+            
+            )
+        # Update the quantity of the desired length
+            desired_length_obj.quantity += 1
+            desired_length_obj.save()  
+        
         # Return the desired_length_obj to indicate the operation was successful
         return desired_length_obj
 
