@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Count</title>
+</head>
+{% block content %}
+<body>
+    <h1>Inventory Count</h1>
+    <table class='data-table'>
+        <tr>
+            <th>Ref ID</th>
+            <th>Name</th>
+            <th>Quantity</th>
+        </tr>
+        {% for item in counted_items %}
+        <tr>
+            <td>{{ item.ref_id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'inventorycount' %}">Download PDF</a>
+</body>
+{% endblock %}
+</html>
