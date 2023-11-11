@@ -8,6 +8,9 @@ django = "*"
 pytz = "*"
 fontawesomefree = "*"
 python-decouple = "*"
+gunicorn = "*"
+dj-database-url = "*"
+whitenoise = "*"
 
 [dev-packages]
 
