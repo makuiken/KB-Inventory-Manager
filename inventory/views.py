@@ -8,12 +8,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, ListView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.http import FileResponse
-from io import BytesIO
-from django.http import HttpResponse
-from django.template.loader import get_template
-from xhtml2pdf import pisa
+from django.views.generic.edit import CreateView, UpdateView, DeleteView 
 
 #Home List of all objects
 @login_required
@@ -189,33 +184,6 @@ def length_delete(request, ref_id, length):
         return redirect('home')
 
     return render(request, 'inventory/length_delete.html', {'length': length_instance})
-
-@login_required
-def inventory_count(request):
-    download = request.GET.get('download', False)
-    selected_type = request.GET.get('lumber_type', None)
-    if selected_type:
-        lumber_list = Lumber.objects.filter(lumber_type=selected_type)
-    else:
-        lumber_list = Lumber.objects.all()
-
-    length_list = Length.objects.all()
-
-    form = LumberTypeFilterForm()
-    context = {'lumber_list': lumber_list, 'length_list': length_list, 'form': form}
-    if download:
-        return render_to_pdf('inventory/inventory_count_table.html', context)
-    return render(request, 'inventory/inventory_count.html', context)
-
-def render_to_pdf(template_src, context_dict={}):
-    template = get_template(template_src)
-    html = template.render(context_dict)
-    result = BytesIO()
-    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
-
-    if pdf.err:
-        return HttpResponse("Invalid PDF", status_code=400, content_type='text/plain')
-    return HttpResponse(result.getvalue(), content_type='application/pdf')
 
 #User Registration and Login
 def register(request):

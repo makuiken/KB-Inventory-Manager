@@ -65,11 +65,6 @@ class Length(models.Model):
     
     def get_absolute_url(self):
         return reverse('home')
-    def save(self, *args, **kwargs):
-        if self.quantity == 0:
-            self.delete()
-        else:
-            super().save(*args, **kwargs)
     
 
 #Model for Sales
