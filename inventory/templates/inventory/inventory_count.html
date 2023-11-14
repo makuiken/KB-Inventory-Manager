@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Count</title>
+</head>
+{% block content %}
+<body>
+    <h1>Inventory Count</h1>
+    {% for lumber in lumber_list %}
+    <h2>{{ lumber.name }} ({{ lumber.ref_id }})</h2>
+    <table class='data-table'>
+        <tr>
+            <th>Length</th>
+            <th>Quantity</th>
+            <th>Counted</th>
+        </tr>
+        {% for length in lumber.length_set.all|dictsortreversed:"length" %}
+        <tr>
+            <td>{{ length.length }}</td>
+            <td>{{ length.quantity }}</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+    <a href="{% url 'inventorycount' %}?download=true">Download PDF</a>
+</body>
+{% endblock %}
+</html>

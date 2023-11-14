@@ -22,6 +22,7 @@ class QuantityForm(forms.ModelForm):
 
 class SellForm(forms.Form):
     quantity = forms.IntegerField(min_value=1, label='Quantity')
+    salesorder = forms.IntegerField(min_value=1, label='Sales Order Number')
 
 class CutForm(forms.Form):
     desired_length = forms.IntegerField(label='Desired Length')

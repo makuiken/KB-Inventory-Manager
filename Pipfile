@@ -12,6 +12,8 @@ gunicorn = "*"
 dj-database-url = "*"
 whitenoise = "*"
 psycopg2-binary = "*"
+reportlab = "*"
+xhtml2pdf = "*"
 
 [dev-packages]
 

@@ -4,6 +4,7 @@ django==4.2.7; python_version >= '3.8'
 fontawesomefree==6.4.2
 gunicorn==21.2.0; python_version >= '3.5'
 packaging==23.2; python_version >= '3.7'
+pillow==10.1.0; python_version >= '3.8'
 psycopg2-binary==2.9.9; python_version >= '3.7'
 python-decouple==3.8
 pytz==2023.3.post1
@@ -11,3 +12,4 @@ sqlparse==0.4.4; python_version >= '3.5'
 typing-extensions==4.8.0; python_version >= '3.8'
 tzdata==2023.3; sys_platform == 'win32'
 whitenoise==6.6.0; python_version >= '3.8'
+xhtml2pdf==0.2.13; python_version >= '3.8'
