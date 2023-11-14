@@ -17,7 +17,6 @@
                 <th>Sell</th>
                 <th>Cut</th>
                 <th>Edit</th>
-                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -46,15 +45,15 @@
                         </a>
                     </span>
                 </td>
-                <td class="action-cell">
-                    <span class="icon-button">
-                        <a href="{% url 'lengthdelete' ref_id=lumber.ref_id length=length.length %}">
-                            <i class="fa-solid fa-trash"></i>
-                        </a>
-                    </span>
-                </td>
             </tr>
             {% endfor %}
+            <tr>
+                <td colspan="5" style="text-align: center;">
+                    <a href="{% url 'lengthcreate' ref_id=lumber.ref_id %}" >
+                        <i class="fa fa-plus-circle"></i> Add Length
+                    </a>
+                </td>
+            </tr>
         </tbody>
     </table>
 {% endfor %}
