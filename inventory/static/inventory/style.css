@@ -170,7 +170,3 @@ main {
     transform: translate(-50%, -50%);
     color: #fff; /* Set the icon color */
 }
-
-.green-circle {
-    color: green;
-}
