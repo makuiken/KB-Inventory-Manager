@@ -11,16 +11,9 @@ from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import FileResponse
 from io import BytesIO
-import itertools
-from datetime import datetime
-import pytz
-from random import randint
-from statistics import mean
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfbase.rl_codecs import namedtuple
-from reportlab.lib import colors
-from reportlab.graphics.shapes import *
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 #Home List of all objects
 @login_required
@@ -199,77 +192,30 @@ def length_delete(request, ref_id, length):
 
 @login_required
 def inventory_count(request):
-    if request.method == 'POST':
-        # Fetch all Length objects
-        lengths = Length.objects.all()
-        location = 'Warwick'
-
-        # Prepare the data for the PDF
-        counted_items = [(length.lumber.ref_id, length.lumber.name) for length in lengths]
-        data = [("LENGTH", "QUANTITY", "COUNTED"), ]
-        for length in lengths:
-            data.append((length.length, length.quantity, ""))
-
-        # Generate the PDF
-        pdf = export_to_pdf(counted_items, data, location)
-        return FileResponse(pdf, as_attachment=True, filename='inventory_count.pdf')
+    download = request.GET.get('download', False)
+    selected_type = request.GET.get('lumber_type', None)
+    if selected_type:
+        lumber_list = Lumber.objects.filter(lumber_type=selected_type)
     else:
-        return render(request, 'inventory/inventory_count.html')
-  
-def grouper(iterable, n):
-    args = [iter(iterable)] * n
-    return itertools.zip_longest(*args)
+        lumber_list = Lumber.objects.all()
 
+    length_list = Length.objects.all()
 
-def export_to_pdf(counted_items, data, location):
-    buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=letter)
-    w, h = letter
-    page_number = 1
-    max_rows_per_page = 15
-    local_tz = pytz.timezone('America/New_York')
-    current_time = datetime.now(local_tz)
+    form = LumberTypeFilterForm()
+    context = {'lumber_list': lumber_list, 'length_list': length_list, 'form': form}
+    if download:
+        return render_to_pdf('inventory/inventory_count_table.html', context)
+    return render(request, 'inventory/inventory_count.html', context)
 
-    # Margin.
-    x_offset = 50
-    y_offset = 150
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
 
-    # Space between rows.
-    padding = 30
-
-    #Header
-    c.setFont("Helvetica", 30)
-    c.drawString(50, h - 50, "Inventory Count")
-    c.setFont("Helvetica", 20)
-    c.drawString(50, h - 80, "- " + location)
-
-
-    #Table
-    xlist = [x + x_offset for x in [0, 100, 200, 450]]
-    ylist = [h - y_offset - i*padding for i in range(max_rows_per_page + 1)]
-    for item in counted_items:
-      #Per Page
-      for rows in grouper(data, max_rows_per_page):
-
-          c.rect(50, h - 150, 350, 40)
-          c.setFont("Helvetica", 20)
-          c.drawString(50, h - 140, item)
-          c.setFont("Helvetica", 10)
-          c.drawString(w - 200, 50, current_time.strftime("%d %B %Y %I:%M%p"))
-          c.drawString(50, 50, str(page_number))
-          c.setFont("Helvetica", 15)
-
-          rows = tuple(filter(bool, rows))
-          c.grid(xlist, ylist[:len(rows) + 1])
-          for y, row in zip(ylist[:-1], rows):
-              for x, cell in zip(xlist, row):
-                  c.drawString(x + 2, y - padding + 3, str(cell))
-          c.showPage()
-          page_number += 1
-
-    c.save()
-    buffer.seek(0)
-    return FileResponse(buffer)
+    if pdf.err:
+        return HttpResponse("Invalid PDF", status_code=400, content_type='text/plain')
+    return HttpResponse(result.getvalue(), content_type='application/pdf')
 
 #User Registration and Login
 def register(request):

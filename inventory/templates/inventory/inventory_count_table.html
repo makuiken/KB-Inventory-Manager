@@ -1,11 +1,38 @@
-{% extends 'base.html' %} {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Inventory Count</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .data-table {
+            border: 1px solid #ccc; /* Add this line to apply the border to the table */
+            overflow: hidden;
+        }
+
+        .data-table th,
+        .data-table td {
+            text-align: left;
+            max-width: 20%;
+        }
+
+        .data-table th:last-child,
+        .data-table td:last-child {
+            max-width: 99%;
+        }
+
+
+        .data-table tr:nth-child(even) {
+            background-color: #aaaaaa;
+        }
+    </style>
 </head>
-{% block content %}
 <body>
     <h1>Inventory Count</h1>
     {% for lumber in lumber_list %}
@@ -25,7 +52,5 @@
         {% endfor %}
     </table>
     {% endfor %}
-    <a href="{% url 'inventorycount' %}?download=true">Download PDF</a>
 </body>
-{% endblock %}
 </html>
